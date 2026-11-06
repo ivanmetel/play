@@ -3,19 +3,19 @@ const requestMenuButton = document.querySelector(".menu-toggle");
 const requestMobileMenu = document.querySelector("#mobile-menu");
 const requestForm = document.querySelector("#request-form");
 const requestNote = document.querySelector("#request-note");
-const requestFallback = document.querySelector("#request-fallback");
 const requestSubmit = requestForm.querySelector('[type="submit"]');
 const requestFields = [...requestForm.querySelectorAll('input:not([name="website"]), textarea')];
 let requestReturnFocus = null;
 const requestText = document.documentElement.lang.startsWith("en")
-  ? { available: "Leave your contact details and we will get back to you.", unavailable: "Email or call us.", pending: "Sending your message…", sent: "Message sent. Thank you!", error: "We could not send your message. Please try again." }
-  : { available: "Оставьте контакт, чтобы мы могли ответить.", unavailable: "Напишите или позвоните нам.", pending: "Отправляем сообщение…", sent: "Сообщение отправлено. Спасибо!", error: "Не удалось отправить сообщение. Попробуйте ещё раз." };
+  ? { available: "Leave your contact details and we will get back to you.", pending: "Sending your message…", sent: "Message sent. Thank you!", error: "We could not send your message. Please try again." }
+  : { available: "Оставьте контакт, чтобы мы могли ответить.", pending: "Отправляем сообщение…", sent: "Сообщение отправлено. Спасибо!", error: "Не удалось отправить сообщение. Попробуйте ещё раз." };
 
 function getContactEndpoint() {
   return typeof window.PLAY_CONTACT_API_URL === "string" ? window.PLAY_CONTACT_API_URL.trim() : "";
 }
 
 function setRequestNote(message, state = "") {
+  requestNote.hidden = !message;
   requestNote.textContent = message;
   requestNote.dataset.state = state;
 }
@@ -24,9 +24,8 @@ function updateContactAvailability() {
   const available = Boolean(getContactEndpoint());
   requestFields.forEach(field => { field.disabled = !available; });
   requestSubmit.disabled = !available;
-  requestForm.hidden = !available;
-  requestFallback.hidden = available;
-  setRequestNote(available ? requestText.available : requestText.unavailable, available ? "" : "unavailable");
+  requestForm.hidden = false;
+  setRequestNote(available ? requestText.available : "", available ? "" : "unavailable");
 }
 
 updateContactAvailability();
